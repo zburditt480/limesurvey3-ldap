@@ -1,0 +1,29 @@
+version: "2"
+services:
+  limesurvey:
+    image: limesurvey:latest
+    container_name: "limesurvey-${DEPLOY}"
+    volumes:
+      - "./conf-ldap:/etc/ldap"
+      - "/var/log/docker/limesurvey-${DEPLOY}:/var/log/apache2"
+      - "/etc/pki/ca-trust/source/anchors/LetnetCA:/etc/ssl/certs/LetnetCA.pem"
+      - "./conf-postfix/main.cf:/etc/postfix/main.cf"
+    environment:
+      - "TZ=America/Chicago"
+    networks:
+      - webtools
+  db:
+    image: mariadb:latest
+    container_name: "lime_db-${DEPLOY}"
+    volumes:
+      - "./db-conf:/etc/mysql"
+      - "./data:/var/lib/mysql"
+    environment:
+      - "MYSQL_ROOT_PASSWORD=${ROOT_PWD}"
+      - "TZ=America/Chicago"
+    networks:
+      - webtools
+networks:
+  webtools:
+    external:
+      name: "${NETWORK}-${DEPLOY}"
