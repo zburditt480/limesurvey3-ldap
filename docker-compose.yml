@@ -1,7 +1,7 @@
 version: "2"
 services:
   limesurvey:
-    image: limesurvey:latest
+    image: lime-ldap:latest
     container_name: "limesurvey-${DEPLOY}"
     volumes:
       - "./conf-ldap:/etc/ldap"
@@ -10,6 +10,9 @@ services:
       - "./conf-postfix/main.cf:/etc/postfix/main.cf"
     environment:
       - "TZ=America/Chicago"
+    ports:
+      - "80:80"
+      - "443:443"
     networks:
       - webtools
   db:
